@@ -8,4 +8,14 @@ class Usuario {
   }
 
   fun espacioDePublicaciones() = publicaciones.sumBy { it.espacioQueOcupa() }
-}
+
+  fun darMeGusta(publicacion: Publicacion) {
+    check(!publicacion.aQuienLeGusta.contains(this)){"Ya le diste me gusta!"}
+    publicacion.aQuienLeGusta.add(this)
+    publicacion.cantidadMeGusta += 1
+  }
+
+
+
+  }
+
