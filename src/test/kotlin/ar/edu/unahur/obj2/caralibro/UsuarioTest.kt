@@ -1,15 +1,24 @@
 package ar.edu.unahur.obj2.caralibro
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 
 class UsuarioTest : DescribeSpec({
   describe("Caralibro") {
-    val saludoCumpleanios = Texto("Felicidades Pepito, que los cumplas muy feliz")
-    val fotoEnCuzco = Foto(768, 1024)
-    val fotoEnIguazu = Foto(700, 1000)
-    val videoGraduacion = Video("SD", 900)
+    /////PUBLICACIONES
+    val saludoCumpleanios = Texto("Felicidades Pepito, que los cumplas muy feliz", Publico)
+    val fotoEnCuzco = Foto(768, 1024, Publico)
+    val fotoEnIguazu = Foto(700, 1000, Publico)
+    val videoGraduacion = Video("SD", 900, Publico)
+    val videoNavidad = Video("HD1080", 2000, PublicoConExcluidos)
     FactorDeCompresion.setearNuevoFactor(0.3)
+    /////USUARIOS
+    val rodri = Usuario()
+    val noe = Usuario()
+    val hernan = Usuario()
+    val tiaMetida = Usuario()
 
     describe("Una publicación") {
 
@@ -53,6 +62,7 @@ class UsuarioTest : DescribeSpec({
     describe("Un usuario") {
       val juana = Usuario()
       val lisa = Usuario()
+      val lucho = Usuario()
       it("puede calcular el espacio que ocupan sus publicaciones") {
         juana.agregarPublicacion(fotoEnCuzco) //393216 con compresion en 0.5
         juana.agregarPublicacion(saludoCumpleanios)
@@ -60,16 +70,31 @@ class UsuarioTest : DescribeSpec({
         juana.espacioDePublicaciones().shouldBe(236875)
       }
 
-      it("puede calcular dar me gusta a una publicacion") {
+      it("puede dar me gusta a una publicacion una sola vez") {
         lisa.agregarPublicacion(fotoEnCuzco) //393216 con compresion en 0.5
         juana.darMeGusta(fotoEnCuzco)
-        fotoEnCuzco.cantidadMeGusta.shouldBe(1)
-        fotoEnCuzco.aQuienLeGusta.shouldBe(juana)
-        ////falta implementar var en clase hija
+        lucho.darMeGusta(fotoEnCuzco)
+        fotoEnCuzco.cantidadMeGusta.shouldBe(2)
+        fotoEnCuzco.aQuienLeGusta.shouldContain(juana)
+        fotoEnCuzco.aQuienLeGusta.shouldContain(lucho)
+        shouldThrowAny{ juana.darMeGusta(fotoEnCuzco) }
       }
 
-    }
 
+
+    }
+    describe("Permisos") {
+      noe.agregarAmigo(rodri)
+      noe.agregarAmigo(hernan)
+      noe.excluirUsuario(tiaMetida)
+      noe.agregarPublicacion(videoNavidad)
+      it("Quien puede ver publicaciones de noe") {
+        videoNavidad.puedeSerVistaPor(noe, tiaMetida).shouldBe(false)
+        videoNavidad.puedeSerVistaPor(noe, rodri).shouldBe(true)
+        videoNavidad.puedeSerVistaPor(noe, hernan).shouldBe(true)
+
+      }
+    }
 
 
 

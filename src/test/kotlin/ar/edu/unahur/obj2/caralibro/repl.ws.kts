@@ -9,11 +9,4 @@ import ar.edu.unahur.obj2.caralibro.Foto
 
 listOf(1, 8, 10).average()
 
-val fotoEnCuzco = Foto(768, 1024)
-fotoEnCuzco.factorDeCompresion
-FactorDeCompresion.setearNuevoFactor(0.9)
-FactorDeCompresion.factor
-FactorDeCompresion.setearNuevoFactor(0.5)
-FactorDeCompresion.factor
-fotoEnCuzco.factorDeCompresion
 
