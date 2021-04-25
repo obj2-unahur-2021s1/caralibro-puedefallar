@@ -16,11 +16,13 @@ class UsuarioTest : DescribeSpec({
     val fotoEnCuzco = Foto(768, 1024, Publico)
     val fotoEnIguazu = Foto(700, 1000, Publico)
     val videoGraduacion = Video("SD", 900, Publico)
-    val videoNavidad = Video("HD1080", 2000, PublicoConExcluidos)
+    val videoNavidad = Video("HD1080p", 2000, PublicoConExcluidos)
     val textoAmigos = Texto("Me quedé dormida, no le digan a mi jefe :)", SoloAmigos)
     val videoPartido = Video("SD", 9500, PublicoConExcluidos)
     val textoFamilia = Texto("Hola a todos", SoloAmigos)
-
+    val videoRacing = Video("HD1080p", 5400, Publico)
+    val textoComunion = Texto("Estan invitados a mi comunión el sábado a las 8AM", SoloAmigos)
+    val fotoEnElCilindro = Foto(650, 1200, SoloAmigos)
     FactorDeCompresion.setearNuevoFactor(0.3)
     /////USUARIOS
     val rodri = Usuario()
@@ -126,6 +128,21 @@ class UsuarioTest : DescribeSpec({
         gustavo.darMeGusta(fotoEnIguazu)
         rodri.amigoMasPopular().shouldBe(noe)
         rodri.amigoMasPopular().shouldNotBe(hernan)
+      }
+      it("usuario es stalker de otro") {
+        rodri.agregarPublicacion(textoComunion)
+        rodri.agregarPublicacion(videoRacing)
+        rodri.agregarPublicacion(fotoEnElCilindro)
+        silvia.darMeGusta(textoComunion)
+        silvia.darMeGusta(videoRacing)
+        silvia.darMeGusta(textoFamilia)
+        silvia.darMeGusta(fotoEnElCilindro)
+        silvia.darMeGusta(videoPartido)
+        gustavo.darMeGusta(videoPartido)
+        rodri.cantidadDeMeGustaDe(silvia).shouldBe(5)
+        rodri.cantidadDeMeGustaDe(gustavo).shouldBe(1)
+        silvia.esStalkerDe(rodri).shouldBe(true)
+        gustavo.esStalkerDe(rodri).shouldBe(false)
 
       }
 
@@ -153,10 +170,6 @@ class UsuarioTest : DescribeSpec({
         shouldThrowAny{ tiaMetida.darMeGusta(videoNavidad) }
       }
     }
-
-
-
-
 
   }
 })

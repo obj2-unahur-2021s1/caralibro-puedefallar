@@ -26,6 +26,12 @@ class Usuario {
 
   fun totalDeMeGusta() = publicaciones.sumBy { it.cantidadMeGusta }
 
+  fun cantidadDeMeGustaDe(amigo: Usuario) : Int {
+    var contadorDeLikesDeAmigo: Int = 0
+    publicaciones.forEach { if(it.quienDioLike().contains(amigo)) {contadorDeLikesDeAmigo += 1} }
+    return contadorDeLikesDeAmigo
+  }
+
   fun puedeDarMeGusta(publicacion: Publicacion) :Boolean {
     return !(publicacion.aQuienLeGusta.contains(this)) && publicacion.puedeSerVistaPor(publicacion.autor, this)
   }
@@ -49,6 +55,9 @@ class Usuario {
   }
   fun amigoMasPopular() :Usuario = amigos.maxByOrNull { it.totalDeMeGusta() }!!
 
+  fun esStalkerDe(amigo: Usuario) : Boolean{
+    return amigo.cantidadDeMeGustaDe(this) > amigo.publicaciones.size * 0.9
+  }
 
   }
 
