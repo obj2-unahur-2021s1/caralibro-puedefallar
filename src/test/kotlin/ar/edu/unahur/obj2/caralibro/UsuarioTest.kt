@@ -169,6 +169,11 @@ class UsuarioTest : DescribeSpec({
         rodri.puedeDarMeGusta(videoNavidad).shouldBe(false)
         shouldThrowAny{ tiaMetida.darMeGusta(videoNavidad) }
       }
+      it("cambiar el permiso de una publicación") {
+        textoAmigos.modificarPermiso(PrivadoConPermitidos)
+        noe.agregarPermitido(gustavo)
+        gustavo.puedeVerPublicacion(textoAmigos, noe).shouldBe(true)
+      }
     }
 
   }
