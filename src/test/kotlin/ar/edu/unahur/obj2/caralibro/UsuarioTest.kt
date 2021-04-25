@@ -4,7 +4,6 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
