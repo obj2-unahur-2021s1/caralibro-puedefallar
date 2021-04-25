@@ -7,6 +7,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 class UsuarioTest : DescribeSpec({
   describe("Caralibro") {
@@ -84,6 +85,7 @@ class UsuarioTest : DescribeSpec({
       noe.agregarAmigo(rodri)
       rodri.agregarPublicacion(textoFamilia)
       rodri.agregarPublicacion(videoPartido)
+      silvia.agregarPublicacion(fotoEnIguazu)
       it("puede calcular el espacio que ocupan sus publicaciones") {
         juana.agregarPublicacion(fotoEnCuzco) //393216 con compresion en 0.5
         juana.agregarPublicacion(saludoCumpleanios)
@@ -110,7 +112,22 @@ class UsuarioTest : DescribeSpec({
         rodri.mejoresAmigos().shouldContainAll(silvia, gustavo)
         rodri.mejoresAmigos().shouldNotContainAll(hernan, noe)
       }
+      it("Amigo más popular") {
+        noe.agregarAmigo(rodri)
+        noe.agregarAmigo(hernan)
+        noe.agregarAmigo(tiaMetida)
+        noe.agregarPublicacion(videoNavidad)
+        noe.agregarPublicacion(textoAmigos)
+        rodri.darMeGusta(videoNavidad)
+        hernan.darMeGusta(videoNavidad)
+        rodri.darMeGusta(textoAmigos)
+        hernan.darMeGusta(textoAmigos)
+        silvia.agregarAmigo(gustavo)
+        gustavo.darMeGusta(fotoEnIguazu)
+        rodri.amigoMasPopular().shouldBe(noe)
+        rodri.amigoMasPopular().shouldNotBe(hernan)
 
+      }
 
 
     }

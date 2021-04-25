@@ -24,6 +24,8 @@ class Usuario {
   }
   fun espacioDePublicaciones() = publicaciones.sumBy { it.espacioQueOcupa() }
 
+  fun totalDeMeGusta() = publicaciones.sumBy { it.cantidadMeGusta }
+
   fun puedeDarMeGusta(publicacion: Publicacion) :Boolean {
     return !(publicacion.aQuienLeGusta.contains(this)) && publicacion.puedeSerVistaPor(publicacion.autor, this)
   }
@@ -45,6 +47,7 @@ class Usuario {
   fun mejoresAmigos() : List<Usuario> {
     return amigos.filter { this.esMejorAmigo(it) }
   }
+  fun amigoMasPopular() :Usuario = amigos.maxByOrNull { it.totalDeMeGusta() }!!
 
 
   }
