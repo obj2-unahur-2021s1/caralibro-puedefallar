@@ -3,6 +3,9 @@ package ar.edu.unahur.obj2.caralibro
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.shouldBe
 
 class UsuarioTest : DescribeSpec({
@@ -13,12 +16,20 @@ class UsuarioTest : DescribeSpec({
     val fotoEnIguazu = Foto(700, 1000, Publico)
     val videoGraduacion = Video("SD", 900, Publico)
     val videoNavidad = Video("HD1080", 2000, PublicoConExcluidos)
+    val textoAmigos = Texto("Me quedé dormida, no le digan a mi jefe :)", SoloAmigos)
+    val videoPartido = Video("SD", 9500, PublicoConExcluidos)
+    val textoFamilia = Texto("Hola a todos", SoloAmigos)
+
     FactorDeCompresion.setearNuevoFactor(0.3)
     /////USUARIOS
     val rodri = Usuario()
     val noe = Usuario()
     val hernan = Usuario()
     val tiaMetida = Usuario()
+    val jefeDeNoe = Usuario()
+    val silvia = Usuario()
+    val gustavo = Usuario()
+    val miriam = Usuario()
 
     describe("Una publicación") {
 
@@ -63,6 +74,16 @@ class UsuarioTest : DescribeSpec({
       val juana = Usuario()
       val lisa = Usuario()
       val lucho = Usuario()
+      rodri.agregarAmigo(silvia)
+      rodri.agregarAmigo(gustavo)
+      rodri.agregarAmigo(noe)
+      rodri.agregarAmigo(hernan)
+      rodri.excluirUsuario(noe)
+      rodri.excluirUsuario(hernan)
+      noe.agregarAmigo(miriam)
+      noe.agregarAmigo(rodri)
+      rodri.agregarPublicacion(textoFamilia)
+      rodri.agregarPublicacion(videoPartido)
       it("puede calcular el espacio que ocupan sus publicaciones") {
         juana.agregarPublicacion(fotoEnCuzco) //393216 con compresion en 0.5
         juana.agregarPublicacion(saludoCumpleanios)
@@ -79,6 +100,16 @@ class UsuarioTest : DescribeSpec({
         fotoEnCuzco.aQuienLeGusta.shouldContain(lucho)
         shouldThrowAny{ juana.darMeGusta(fotoEnCuzco) }
       }
+      it("es mas amistoso que otro") {
+        rodri.esMasAmistosoQue(noe).shouldBe(true)
+        noe.esMasAmistosoQue(rodri).shouldBe(false)
+      }
+      it("mejores amigos de rodri") {
+        rodri.esMejorAmigo(silvia).shouldBe(true)
+        rodri.esMejorAmigo(hernan).shouldBe(false)
+        rodri.mejoresAmigos().shouldContainAll(silvia, gustavo)
+        rodri.mejoresAmigos().shouldNotContainAll(hernan, noe)
+      }
 
 
 
@@ -86,13 +117,23 @@ class UsuarioTest : DescribeSpec({
     describe("Permisos") {
       noe.agregarAmigo(rodri)
       noe.agregarAmigo(hernan)
+      noe.agregarAmigo(tiaMetida)
       noe.excluirUsuario(tiaMetida)
       noe.agregarPublicacion(videoNavidad)
+      noe.agregarPublicacion(textoAmigos)
+      rodri.darMeGusta(videoNavidad)
       it("Quien puede ver publicaciones de noe") {
         videoNavidad.puedeSerVistaPor(noe, tiaMetida).shouldBe(false)
         videoNavidad.puedeSerVistaPor(noe, rodri).shouldBe(true)
         videoNavidad.puedeSerVistaPor(noe, hernan).shouldBe(true)
-
+        textoAmigos.puedeSerVistaPor(noe, noe).shouldBe(true)
+        videoNavidad.puedeSerVistaPor(noe, noe).shouldBe(true)
+        tiaMetida.puedeVerPublicacion(videoNavidad, noe).shouldBe(false)
+        hernan.puedeVerPublicacion(textoAmigos, noe).shouldBe(true)
+        jefeDeNoe.puedeVerPublicacion(textoAmigos, noe).shouldBe(false)
+        tiaMetida.puedeDarMeGusta(videoNavidad).shouldBe(false)
+        rodri.puedeDarMeGusta(videoNavidad).shouldBe(false)
+        shouldThrowAny{ tiaMetida.darMeGusta(videoNavidad) }
       }
     }
 

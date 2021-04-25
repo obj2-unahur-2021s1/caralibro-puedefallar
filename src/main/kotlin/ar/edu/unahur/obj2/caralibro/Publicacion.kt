@@ -8,7 +8,7 @@ object FactorDeCompresion {
         this.factor = nuevoFactor
     }
 }
-
+/////////////////////////PERMISOS///////////////////////////////////
 abstract class Permiso {
     abstract fun permiteVerPubli(autor:Usuario, visitante:Usuario) :Boolean
 }
@@ -21,13 +21,13 @@ object Publico :Permiso() {
 }
 object SoloAmigos :Permiso() {
     override fun permiteVerPubli(autor: Usuario, visitante: Usuario): Boolean {
-        return autor.amigos.contains(visitante)
+        return autor.amigos.contains(visitante) || autor == visitante
     }
 
 }
 object PrivadoConPermitidos :Permiso() {
     override fun permiteVerPubli(autor: Usuario, visitante: Usuario): Boolean {
-        return autor.listaPermitidos.contains(visitante)
+        return autor.listaPermitidos.contains(visitante) || autor == visitante
     }
 
 }
@@ -38,8 +38,9 @@ object PublicoConExcluidos :Permiso() {
 
 
 }
-
+/////////////////////////PUBLICACION///////////////////////////////////
 abstract class Publicacion(var permiso:Permiso) {
+    lateinit var autor: Usuario
     val aQuienLeGusta = mutableListOf<Usuario>()
     fun quienDioLike() = aQuienLeGusta
     var cantidadMeGusta: Int = 0
